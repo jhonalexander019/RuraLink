@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../viewmodels/register_bloc.dart';
+import '../widgets/alert_message.dart';
 import '../widgets/register_form.dart';
 import 'login_screen.dart';
 
@@ -14,12 +15,13 @@ class RegisterScreen extends StatelessWidget {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(200.0),
+        preferredSize: const Size.fromHeight(130.0),
         child: AppBar(
           title: const SizedBox.shrink(),
           flexibleSpace: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
+              const SizedBox(height: 30),
               Image.asset(
                 'assets/images/car.png',
                 height: 80,
@@ -33,7 +35,6 @@ class RegisterScreen extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: 20),
             ],
           ),
         ),
@@ -55,19 +56,22 @@ class RegisterScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 20),
               RegisterForm(
-                onRegister: (email, password, confirmPassword) {
-                  registerBloc.register(email, password, confirmPassword);
+                onRegister:
+                    (username, email, password, confirmPassword, userTypeId) {
+                  registerBloc.register(
+                      username, email, password, confirmPassword, userTypeId);
                 },
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 15),
               if (registerBloc.errorMessage != null)
-                Text(
-                  registerBloc.errorMessage!,
-                  style: const TextStyle(color: Colors.red),
-                ),
-              const SizedBox(height: 20),
+                AlertMessage(
+                    message: registerBloc.errorMessage!, isSuccess: false),
+              if (registerBloc.successMessage != null)
+                AlertMessage(
+                    message: registerBloc.successMessage!, isSuccess: true),
+              const SizedBox(height: 15),
               GestureDetector(
                 onTap: () {
                   Navigator.pushAndRemoveUntil(
@@ -81,18 +85,17 @@ class RegisterScreen extends StatelessWidget {
                   text: const TextSpan(
                     text: '¿Ya tienes una cuenta? ',
                     style: TextStyle(
-                        color: Colors.black,
-                        fontFamily: 'Wondercity',
-                        ),
+                      color: Colors.black,
+                      fontFamily: 'Wondercity',
+                    ),
                     children: [
                       TextSpan(
                         text: 'Inicia sesión',
                         style: TextStyle(
                           color:
                               Colors.green, // Color solo para "Inicia sesión"
-                          fontWeight: FontWeight.bold, 
+                          fontWeight: FontWeight.bold,
                           fontFamily: 'Wondercity',
-
                         ),
                       ),
                     ],

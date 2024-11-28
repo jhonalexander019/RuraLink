@@ -1,12 +1,23 @@
 import '../repositories/auth_repository.dart';
-import '../entities/user.dart';
 
 class RegisterUser {
   final AuthRepository repository;
 
   RegisterUser(this.repository);
 
-  Future<User?> call(String email, String password, String confirmPassword) async {
-    return await repository.register(email, password, confirmPassword);
+  Future<bool?> call({
+    required String username,
+    required String email,
+    required String password,
+    required String confirmPassword,
+    required int userTypeId,
+  }) async {
+    return await repository.register(
+      username: username,
+      email: email,
+      password: password,
+      confirmPassword: confirmPassword,
+      userTypeId: userTypeId,
+    );
   }
 }

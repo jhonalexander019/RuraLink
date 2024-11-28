@@ -1,6 +1,6 @@
-import '../entities/user.dart';
+import '../entities/user_home.dart';
 
 abstract class AuthRepository {
-  Future<User?> login(String email, String password);
-  Future<User?> register(String email, String password, String confirmPassword);
+  Future<UserHome> login(String email, String password);
+  Future<bool> register({required String username, required String email, required String password, required String confirmPassword, required int userTypeId});
 }

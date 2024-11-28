@@ -5,8 +5,9 @@ import 'data/repositories/auth_repository_impl.dart';
 import 'domain/usecases/login_user.dart';
 import 'domain/usecases/register_user.dart';
 import 'presentation/viewmodels/login_bloc.dart';
-import 'presentation/screens/login_screen.dart';
 import 'presentation/viewmodels/register_bloc.dart';
+import 'presentation/viewmodels/token_bloc.dart';
+import 'util/token_validator.dart';
 
 void main() {
   runApp(const MyApp());
@@ -25,8 +26,15 @@ class MyApp extends StatelessWidget {
 
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => LoginBloc(loginUserUseCase),),
-        ChangeNotifierProvider(create: (_) => RegisterBloc(registerUserUseCase)),
+        ChangeNotifierProvider(
+          create: (_) => LoginBloc(loginUserUseCase),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => RegisterBloc(registerUserUseCase),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => TokenBloc(),
+        ),
       ],
       child: MaterialApp(
         title: 'RuraLink',
@@ -39,7 +47,7 @@ class MyApp extends StatelessWidget {
           brightness: Brightness.dark,
         ),
         themeMode: ThemeMode.system,
-        home: LoginScreen(),
+        home: TokenValidator(),
       ),
     );
   }

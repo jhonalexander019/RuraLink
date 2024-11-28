@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../util/register_validator.dart';
-import '../screens/home_screen.dart';
 
 class RegisterForm extends StatefulWidget {
-  final Function(String email, String password, String confirmPassword)
-      onRegister;
+  final Function(String username, String email, String password,
+      String confirmPassword, int userTypeId) onRegister;
 
   const RegisterForm({super.key, required this.onRegister});
 
@@ -14,9 +13,11 @@ class RegisterForm extends StatefulWidget {
 
 class _RegisterFormState extends State<RegisterForm> {
   final _formKey = GlobalKey<FormState>();
+  final _usernameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+  final _userTypeIdController = TextEditingController();
   bool _obscurePassword = true;
   bool _obscureRepeatPassword = true;
 
@@ -27,6 +28,17 @@ class _RegisterFormState extends State<RegisterForm> {
       child: Column(
         children: [
           TextFormField(
+            controller: _usernameController,
+            decoration: const InputDecoration(
+              labelText: 'Nombre de usuario',
+              labelStyle: TextStyle(color: Colors.grey),
+            ),
+            validator: (value) {
+              return RegisterValidator.validateUsername(value ?? '');
+            },
+          ),
+          const SizedBox(height: 7),
+          TextFormField(
             controller: _emailController,
             decoration: const InputDecoration(
               labelText: 'Correo Electrónico',
@@ -35,8 +47,9 @@ class _RegisterFormState extends State<RegisterForm> {
             validator: (value) {
               return RegisterValidator.validateEmail(value ?? '');
             },
+            keyboardType: TextInputType.emailAddress,
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 7),
           TextFormField(
             controller: _passwordController,
             decoration: InputDecoration(
@@ -58,7 +71,7 @@ class _RegisterFormState extends State<RegisterForm> {
               return RegisterValidator.validatePassword(value ?? '');
             },
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 7),
           TextFormField(
             controller: _confirmPasswordController,
             decoration: InputDecoration(
@@ -83,14 +96,45 @@ class _RegisterFormState extends State<RegisterForm> {
                   _passwordController.text, value ?? '');
             },
           ),
+          const SizedBox(height: 15),
+          DropdownButtonFormField<int>(
+            decoration: const InputDecoration(
+              labelText: 'Seleccione su rol',
+              labelStyle: TextStyle(color: Colors.grey),
+              border: OutlineInputBorder(),
+            ),
+            value: _userTypeIdController.text.isEmpty
+                ? null
+                : int.tryParse(_userTypeIdController.text),
+            items: const [
+              DropdownMenuItem(
+                value: 1,
+                child: Text("Pasajero"),
+              ),
+              DropdownMenuItem(
+                value: 2,
+                child: Text("Conductor"),
+              ),
+            ],
+            onChanged: (value) {
+              setState(() {
+                _userTypeIdController.text = value?.toString() ?? '';
+              });
+            },
+            validator: (value) {
+              return RegisterValidator.validateUserTypeId(value ?? 0);
+            },
+          ),
           const SizedBox(height: 20),
           ElevatedButton(
             onPressed: () {
               if (_formKey.currentState!.validate()) {
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => const HomeScreen()),
-                  (Route<dynamic> route) => false,
+                widget.onRegister(
+                  _usernameController.text,
+                  _emailController.text,
+                  _passwordController.text,
+                  _confirmPasswordController.text,
+                  int.tryParse(_userTypeIdController.text) ?? 0,
                 );
               }
             },
@@ -111,9 +155,11 @@ class _RegisterFormState extends State<RegisterForm> {
 
   @override
   void dispose() {
+    _usernameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+    _userTypeIdController.dispose();
     super.dispose();
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../viewmodels/login_bloc.dart';
+import '../widgets/alert_message.dart';
 import '../widgets/login_form.dart';
 import 'register_screen.dart';
 
@@ -58,15 +59,12 @@ class LoginScreen extends StatelessWidget {
               const SizedBox(height: 30),
               LoginForm(
                 onLogin: (email, password) {
-                  loginBloc.login(email, password);
+                  loginBloc.login(context, email, password);
                 },
               ),
               const SizedBox(height: 10),
               if (loginBloc.errorMessage != null)
-                Text(
-                  loginBloc.errorMessage!,
-                  style: const TextStyle(color: Colors.red),
-                ),
+                AlertMessage(message: loginBloc.errorMessage!, isSuccess: false),
               const SizedBox(height: 20),
               const Text(
                 'O usa una de tus redes sociales',
